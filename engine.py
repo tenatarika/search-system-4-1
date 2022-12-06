@@ -1,10 +1,10 @@
 import os
 import itertools
 import math
-from typing import List, Union, Any, Optional, Dict
+from typing import List, Any, Optional, Dict
 from numpy import dot
 from numpy.linalg import norm
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class File(BaseModel):
