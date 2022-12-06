@@ -3,8 +3,9 @@ from fastapi import FastAPI, UploadFile, File
 from nltk.corpus import stopwords
 
 from engine import SearchEngine
+from textRank import TextRank4Sentences
 from vacabulary_detector import NewLangDetector
-
+from rake_nltk import Rake
 app = FastAPI()
 
 
@@ -50,6 +51,21 @@ def get_suggestion_files(query: str):
 def get_language_detection(file_path: str):
     service = NewLangDetector()
     return service.get_language(file_path)
+
+
+@app.get("/get_referators")
+def get_referators(file_path: str):
+    with open(file_path) as file:
+        text = file.read()
+
+    tr4sh = TextRank4Sentences()
+    tr4sh.analyze(text)
+    tr4sh_analize = tr4sh.get_top_sentences(5)
+
+    r = Rake()
+    r.extract_keywords_from_text(text)
+    r.get_ranked_phrases()
+    return {"first": tr4sh.get_top_sentences(5), "next": r.get_ranked_phrases()}
 
 
 if __name__ == '__main__':
